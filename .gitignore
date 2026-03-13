@@ -31,3 +31,4 @@
 
 # ReSharper files
 *.[Dd]otSettings
+/.vscode
