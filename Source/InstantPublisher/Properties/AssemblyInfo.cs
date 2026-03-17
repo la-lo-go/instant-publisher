@@ -6,10 +6,10 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("InstantPublisher")]
-[assembly: AssemblyDescription("Autopublish of Plug-ins and Web Resources, when it changed.")]
+[assembly: AssemblyDescription("Monitor local files and instantly publish Web Resources and DLLs to Dataverse on change.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lalogo")]
-[assembly: AssemblyProduct("InstantPublisher")]
+[assembly: AssemblyProduct("InstantPublisher")]]
 [assembly: AssemblyCopyright("Copyright © 2024 Lalogo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]

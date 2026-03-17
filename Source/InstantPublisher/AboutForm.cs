@@ -25,18 +25,18 @@ namespace Lalogo.InstantPublisher
 
         private void GitHubLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://www.pzone.ru");
+            System.Diagnostics.Process.Start("https://github.com/la-lo-go/instant-publisher");
         }
 
         private void GitHubLink_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/ZooY/PZone.XrmToolBox");
+            System.Diagnostics.Process.Start("https://github.com/la-lo-go/instant-publisher");
 
         }
 
         private void BugReportLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/ZooY/PZone.XrmToolBox/issues/new");
+            System.Diagnostics.Process.Start("https://github.com/la-lo-go/instant-publisher/issues/new");
         }
     }
 }
