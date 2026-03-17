@@ -30,7 +30,7 @@
         {
             this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectWebResourceDialog));
-            this.CancelButton = new System.Windows.Forms.Button();
+            this.CancelBtn = new System.Windows.Forms.Button();
             this.SelectButton = new System.Windows.Forms.Button();
             this.WebResourceTree = new System.Windows.Forms.TreeView();
             this.IconsList = new System.Windows.Forms.ImageList(this.components);
@@ -42,16 +42,16 @@
             this.OtherFilterBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
-            // CancelButton
+            // CancelBtn
             // 
-            this.CancelButton.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.CancelButton.Location = new System.Drawing.Point(379, 423);
-            this.CancelButton.Margin = new System.Windows.Forms.Padding(0);
-            this.CancelButton.Name = "CancelButton";
-            this.CancelButton.Size = new System.Drawing.Size(88, 26);
-            this.CancelButton.TabIndex = 0;
-            this.CancelButton.Text = "Cancel";
-            this.CancelButton.UseVisualStyleBackColor = true;
+            this.CancelBtn.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.CancelBtn.Location = new System.Drawing.Point(379, 423);
+            this.CancelBtn.Margin = new System.Windows.Forms.Padding(0);
+            this.CancelBtn.Name = "CancelBtn";
+            this.CancelBtn.Size = new System.Drawing.Size(88, 26);
+            this.CancelBtn.TabIndex = 0;
+            this.CancelBtn.Text = "Cancel";
+            this.CancelBtn.UseVisualStyleBackColor = true;
             // 
             // SelectButton
             // 
@@ -188,7 +188,7 @@
             this.Controls.Add(this.HtmlFilterBox);
             this.Controls.Add(this.WebResourceTree);
             this.Controls.Add(this.SelectButton);
-            this.Controls.Add(this.CancelButton);
+            this.Controls.Add(this.CancelBtn);
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SelectWebResourceDialog";
@@ -203,7 +203,7 @@
 
         #endregion
 
-        private System.Windows.Forms.Button CancelButton;
+        private System.Windows.Forms.Button CancelBtn;
         private System.Windows.Forms.Button SelectButton;
         private System.Windows.Forms.TreeView WebResourceTree;
         private System.Windows.Forms.ImageList IconsList;

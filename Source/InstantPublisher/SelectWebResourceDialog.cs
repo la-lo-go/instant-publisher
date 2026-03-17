@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Security;
 using System.Windows.Forms;
 using Microsoft.Xrm.Sdk;
 using Microsoft.Xrm.Sdk.Query;
@@ -46,6 +48,47 @@ namespace Lalogo.InstantPublisher
 </fetch>";
             _resources = Service.RetrieveMultiple(new FetchExpression(fetchXml)).Entities.OrderBy(r=>r.GetAttributeValue<string>("name"));
             FilterBox_CheckedChanged(null, null);
+        }
+
+
+        public static (Guid Id, string Name)? FindByFileName(string localFilePath)
+        {
+            if (Service == null)
+                return null;
+
+            var fileNameWithoutExt = Path.GetFileNameWithoutExtension(localFilePath);
+            if (string.IsNullOrWhiteSpace(fileNameWithoutExt))
+                return null;
+
+            var escapedName = SecurityElement.Escape(fileNameWithoutExt);
+
+            var fetchXml = $@"
+<fetch no-lock='true'>
+  <entity name='webresource'>
+    <attribute name='name' />
+    <attribute name='webresourcetype' />
+    <filter>
+      <condition attribute='name' operator='not-begin-with' value='msdyn_'/>
+      <condition attribute='ismanaged' operator='eq' value='0'/>
+      <condition attribute='name' operator='like' value='%{escapedName}%'/>
+    </filter>
+  </entity>
+</fetch>";
+
+            var results = Service.RetrieveMultiple(new FetchExpression(fetchXml)).Entities;
+
+            var match = results.FirstOrDefault(r =>
+            {
+                var name = r.GetAttributeValue<string>("name");
+                var lastSegment = name.Split('/').Last();
+                var segmentWithoutExt = Path.GetFileNameWithoutExtension(lastSegment);
+                return string.Equals(segmentWithoutExt, fileNameWithoutExt, StringComparison.OrdinalIgnoreCase);
+            });
+
+            if (match == null)
+                return null;
+
+            return (match.Id, match.GetAttributeValue<string>("name"));
         }
 
 
