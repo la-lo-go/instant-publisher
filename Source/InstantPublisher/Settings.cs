@@ -8,6 +8,7 @@ namespace Lalogo.InstantPublisher
         public string FilePath { get; set; }
         public Guid WebResourceId { get; set; }
         public string WebResourceName { get; set; }
+        public Guid? LastSolutionId { get; set; }
         public bool IsAuto { get; set; }
     }
 

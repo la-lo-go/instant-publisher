@@ -7,6 +7,7 @@ namespace Lalogo.InstantPublisher
         public string FileName { get; set; }
         public string WebResourceName { get; set; }
         public Guid WebResourceId { get; set; }
+        public Guid? LastSolutionId { get; set; }
         public bool IsAuto { get; set; }
         public bool IsBusy { get; set; }
         public bool IsDirty { get; set; }

@@ -65,6 +65,8 @@ namespace Lalogo.InstantPublisher
                 _relativeTimeTimer = new Timer { Interval = 60000 };
                 _relativeTimeTimer.Tick += RelativeTimeTimer_Tick;
                 _relativeTimeTimer.Start();
+
+                SyncAddToSolutionButton();
             }
             catch (Exception ex)
             {
@@ -265,7 +267,7 @@ namespace Lalogo.InstantPublisher
                 if (SettingsManager.Instance.TryLoad<MonitoredCollection>(typeof(InstantPublisher), out collection, _currentConnectionKey))
                 {
                     foreach (var wr in collection.WebResources)
-                        AddWebResourceToUI(wr.FilePath, wr.WebResourceId, wr.WebResourceName, wr.IsAuto);
+                        AddWebResourceToUI(wr.FilePath, wr.WebResourceId, wr.WebResourceName, wr.IsAuto, wr.LastSolutionId);
                     foreach (var p in collection.Plugins)
                         AddPluginToUI(p.FilePath, p.IsAuto);
                 }
@@ -278,6 +280,7 @@ namespace Lalogo.InstantPublisher
             ExportButton.Enabled = true;
             ImportButton.Enabled = true;
             SyncPublishAllButton();
+            SyncAddToSolutionButton();
 
             SelectWebResourceDialog.Service = newService;
             base.UpdateConnection(newService, detail, actionName, parameter);
@@ -324,6 +327,7 @@ namespace Lalogo.InstantPublisher
                     FilePath = kvp.Key,
                     WebResourceId = kvp.Value.WebResourceId,
                     WebResourceName = kvp.Value.WebResourceName,
+                    LastSolutionId = kvp.Value.LastSolutionId,
                     IsAuto = kvp.Value.IsAuto
                 });
             }
@@ -346,6 +350,8 @@ namespace Lalogo.InstantPublisher
 
             PluginsGrid.Rows.Clear();
             _plugins.Clear();
+
+            SyncAddToSolutionButton();
         }
 
         #endregion
@@ -397,7 +403,7 @@ namespace Lalogo.InstantPublisher
             }
         }
 
-        private void AddWebResourceToUI(string fullFileName, Guid webResourceId, string webResourceName, bool isAuto)
+        private void AddWebResourceToUI(string fullFileName, Guid webResourceId, string webResourceName, bool isAuto, Guid? lastSolutionId = null)
         {
             if (_webResources.ContainsKey(fullFileName))
                 return;
@@ -407,6 +413,7 @@ namespace Lalogo.InstantPublisher
                 FileName = fullFileName,
                 WebResourceName = webResourceName,
                 WebResourceId = webResourceId,
+                LastSolutionId = lastSolutionId,
                 IsAuto = isAuto
             };
 
@@ -424,6 +431,7 @@ namespace Lalogo.InstantPublisher
             var directoryName = Path.GetDirectoryName(fullFileName);
             _watchers.Add(directoryName);
             _webResources.Add(fullFileName, webResourceInfo);
+            SyncAddToSolutionButton();
         }
 
 
@@ -442,6 +450,7 @@ namespace Lalogo.InstantPublisher
             }
 
             _webResources.Remove(fileName);
+            SyncAddToSolutionButton();
             SaveSettings();
         }
 
@@ -517,6 +526,37 @@ namespace Lalogo.InstantPublisher
                         SaveSettings();
                     }
                 }
+            }
+        }
+
+        private void AddToSolutionButton_Click(object sender, EventArgs e)
+        {
+            if (Service == null)
+            {
+                MessageBox.Show("Please connect to Dataverse first.", "Add to solution", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (_webResources.Count == 0)
+            {
+                MessageBox.Show("No monitored web resources.", "Add to solution", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            var dialog = new AddWebResourcesToSolutionDialog(Service, _webResources.Values);
+            if (dialog.ShowDialog(this) != DialogResult.OK)
+                return;
+
+            if (dialog.SelectedSolutionId.HasValue)
+            {
+                foreach (var info in _webResources.Values)
+                {
+                    if (dialog.AddedWebResourceIds.Contains(info.WebResourceId))
+                        info.LastSolutionId = dialog.SelectedSolutionId.Value;
+                }
+
+                SaveSettings();
+                ShowNotification($"Added {dialog.AddedWebResourceIds.Count} web resources to solution", false);
             }
         }
 
@@ -926,6 +966,23 @@ namespace Lalogo.InstantPublisher
             }
         }
 
+        private void SyncAddToSolutionButton()
+        {
+            if (AddToSolutionButton == null)
+                return;
+
+            var hasMonitoredWebResources = _webResources.Count > 0;
+            AddToSolutionButton.Enabled = hasMonitoredWebResources;
+            if (ActionToolTip != null)
+            {
+                ActionToolTip.SetToolTip(
+                    AddToSolutionButton,
+                    hasMonitoredWebResources
+                        ? "Add monitored web resources to a solution"
+                        : "No monitored web resources to add");
+            }
+        }
+
         private void PublishingAnimTimer_Tick(object sender, EventArgs e)
         {
             _publishingDotCount++;
@@ -984,6 +1041,7 @@ namespace Lalogo.InstantPublisher
                     FilePath = kvp.Key,
                     WebResourceId = kvp.Value.WebResourceId,
                     WebResourceName = kvp.Value.WebResourceName,
+                    LastSolutionId = kvp.Value.LastSolutionId,
                     IsAuto = kvp.Value.IsAuto
                 });
             }
@@ -1018,7 +1076,7 @@ namespace Lalogo.InstantPublisher
                 var collection = JsonConvert.DeserializeObject<MonitoredCollection>(json);
 
                 foreach (var wr in collection.WebResources)
-                    AddWebResourceToUI(wr.FilePath, wr.WebResourceId, wr.WebResourceName, wr.IsAuto);
+                    AddWebResourceToUI(wr.FilePath, wr.WebResourceId, wr.WebResourceName, wr.IsAuto, wr.LastSolutionId);
                 foreach (var p in collection.Plugins)
                     AddPluginToUI(p.FilePath, p.IsAuto);
 
