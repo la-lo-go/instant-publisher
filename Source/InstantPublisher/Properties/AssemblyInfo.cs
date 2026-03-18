@@ -9,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyDescription("Monitor local files and instantly publish Web Resources and DLLs to Dataverse on change.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Lalogo")]
-[assembly: AssemblyProduct("InstantPublisher")]]
+[assembly: AssemblyProduct("InstantPublisher")]
 [assembly: AssemblyCopyright("Copyright © 2024 Lalogo")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
